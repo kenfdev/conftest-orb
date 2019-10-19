@@ -35,7 +35,7 @@ workflows:
       # key in CircleCI via SSH Permissions, with github.com as Hostname)
       - orb-tools/trigger-integration-workflow:
           name: trigger-integration-dev
-          ssh-fingerprints: cc:ff:30:44:30:d7:f8:50:b1:a3:fc:ef:f5:5c:f5:da
+          ssh-fingerprints: 48:81:89:24:c9:2a:de:02:85:c2:f7:b0:7d:52:12:26
           requires:
             - orb-tools/publish-dev
           filters:
@@ -46,7 +46,7 @@ workflows:
       # the 2nd job (below) may also publish a production orb version
       - orb-tools/trigger-integration-workflow:
           name: trigger-integration-master
-          ssh-fingerprints: cc:ff:30:44:30:d7:f8:50:b1:a3:fc:ef:f5:5c:f5:da
+          ssh-fingerprints: 48:81:89:24:c9:2a:de:02:85:c2:f7:b0:7d:52:12:26
           tag: master
           requires:
             - orb-tools/publish-dev
@@ -63,23 +63,23 @@ workflows:
       # integration tests of your choosing
 
       # this would need to be defined in a `jobs` section (not shown here)
-      - integration-tests:
-          name: integration-tests-dev
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /integration-.*/
+      # - integration-tests:
+      #     name: integration-tests-dev
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /integration-.*/
 
       # call jobs twice, once for workflows resulting from non-master-branch
       # commits (above); once for commits to master (below)
-      - integration-tests:
-          name: integration-tests-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-.*/
+      # - integration-tests:
+      #     name: integration-tests-master
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /master-.*/
 
       # patch, minor, or major publishing, depending on which orb source
       # files have been modified (that logic lives in the
@@ -87,8 +87,8 @@ workflows:
       - orb-tools/dev-promote-prod:
           name: dev-promote-patch
           orb-name: kenfdev/conftest-orb
-          requires:
-            - integration-tests-master
+          # requires:
+          #   - integration-tests-master
           filters:
             branches:
               ignore: /.*/
@@ -99,8 +99,8 @@ workflows:
           name: dev-promote-minor
           release: minor
           orb-name: kenfdev/conftest-orb
-          requires:
-            - integration-tests-master
+          # requires:
+          #   - integration-tests-master
           filters:
             branches:
               ignore: /.*/
@@ -111,8 +111,8 @@ workflows:
           name: dev-promote-major
           release: major
           orb-name: kenfdev/conftest-orb
-          requires:
-            - integration-tests-master
+          # requires:
+          #   - integration-tests-master
           filters:
             branches:
               ignore: /.*/
