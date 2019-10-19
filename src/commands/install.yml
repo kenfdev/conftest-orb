@@ -1,0 +1,22 @@
+description: Install conftest
+
+parameters:
+  version:
+    description: The version of conftest to install
+    type: string
+    default: '0.14.0'
+
+steps:
+  - run:
+      name: Download the CLI
+      command: |
+        if [ ! -f .conftest/bin/conftest ]; then
+          mkdir -p .conftest/bin
+          wget https://github.com/instrumenta/conftest/releases/download/v<< parameters.version >>/conftest_<< parameters.version >>_Linux_x86_64.tar.gz
+          tar xzf conftest_<< parameters.version >>_Linux_x86_64.tar.gz
+          mv conftest .conftest/bin
+          sudo chmod +x .conftest/bin/conftest
+          # Add to PATH
+          echo 'export PATH=${HOME}/.conftest/bin:$PATH' >> $BASH_ENV
+          source $BASH_ENV
+        fi
