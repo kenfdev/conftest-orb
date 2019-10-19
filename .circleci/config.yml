@@ -27,6 +27,12 @@ jobs:
     executor: orb-tools/ubuntu
     steps:
       - conftest/install
+  test_test:
+    executor: orb-tools/ubuntu
+    steps:
+      - conftest/test:
+          policy_path: test/orb/policy
+          file: orb.yml
 
 workflows:
   lint_pack-validate_publish-dev:
