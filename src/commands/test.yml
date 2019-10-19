@@ -13,6 +13,10 @@ parameters:
     description: Return a non-zero exit code when warnings are found.
     type: boolean
     default: false
+  input_type:
+    description: Input type for given source, especially useful when using conftest with stdin.(valid options are toml, tf, hcl, cue, ini, yaml, json)
+    type: enum
+    enum: ["toml", "tf", "hcl", "cue", "ini", "yaml", "json"]
   file:
     description: Return
     type: string
@@ -21,4 +25,4 @@ steps:
   - run:
       name: Run conftest test
       command: |
-        conftest test --namespace << parameters.namespace >> --policy << parameters.policy_path >> <<# parameters.fail_on_warn >>--fail-on-warn<</ parameters.fail_on_warn >> << parameters.file >>
+        conftest test --namespace << parameters.namespace >> --policy << parameters.policy_path >> <<# parameters.fail_on_warn >>--fail-on-warn<</ parameters.fail_on_warn >> <<# parameters.input_type >>--input <<  parameters.input_type >><</ parameters.input_type >> << parameters.file >>

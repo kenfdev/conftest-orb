@@ -40,6 +40,8 @@ jobs:
       - conftest/install
       - conftest/test:
           policy_path: test/orb/policy
+          fail_on_warn: true
+          input_type: yaml
           file: test/orb/orb.yml
 
 workflows:
