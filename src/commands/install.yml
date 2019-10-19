@@ -15,8 +15,9 @@ steps:
           wget https://github.com/instrumenta/conftest/releases/download/v<< parameters.version >>/conftest_<< parameters.version >>_Linux_x86_64.tar.gz
           tar xzf conftest_<< parameters.version >>_Linux_x86_64.tar.gz
           mv conftest .conftest/bin
-          sudo chmod +x .conftest/bin/conftest
+          chmod +x .conftest/bin/conftest
           # Add to PATH
           echo 'export PATH=${HOME}/.conftest/bin:$PATH' >> $BASH_ENV
           source $BASH_ENV
         fi
+        conftest --version
