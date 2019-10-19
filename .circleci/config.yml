@@ -27,6 +27,14 @@ jobs:
     executor: orb-tools/ubuntu
     steps:
       - conftest/install
+  test_test:
+    executor: orb-tools/ubuntu
+    steps:
+      - checkout
+      - conftest/install
+      - conftest/test:
+          policy_path: test/orb/policy
+          file: orb.yml
 
 workflows:
   lint_pack-validate_publish-dev:
@@ -83,10 +91,16 @@ workflows:
       - install_test:
           name: install_test_dev
           filters: *integration-dev_filters
+      - test_test:
+          name: test_test_dev
+          filters: *integration-dev_filters
 
       # triggered by master branch commits
       - install_test:
           name: install_test_master
+          filters: *integration-master_filters
+      - test_test:
+          name: test_test_master
           filters: *integration-master_filters
 
       # patch, minor, or major publishing, depending on which orb source
