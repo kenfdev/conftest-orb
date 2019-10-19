@@ -2,6 +2,8 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@8.27.4
+  # This is used for the integration tests
+  circleci-cli: circleci/circleci-cli@0.1.5
   # add your orb below, to be used in integration tests (note: a
   # @dev:alpha release must exist; if none exists, you'll need to
   # publish manually once before this worklow can succeed)
@@ -27,6 +29,18 @@ jobs:
     executor: orb-tools/ubuntu
     steps:
       - conftest/install
+  test_test:
+    executor: orb-tools/ubuntu
+    steps:
+      - checkout
+      - circleci-cli/install
+      - run:
+          name: Pack the orb.yml
+          command: circleci config pack src > test/orb/orb.yml
+      - conftest/install
+      - conftest/test:
+          policy_path: test/orb/policy
+          file: test/orb/orb.yml
 
 workflows:
   lint_pack-validate_publish-dev:
@@ -83,10 +97,16 @@ workflows:
       - install_test:
           name: install_test_dev
           filters: *integration-dev_filters
+      - test_test:
+          name: test_test_dev
+          filters: *integration-dev_filters
 
       # triggered by master branch commits
       - install_test:
           name: install_test_master
+          filters: *integration-master_filters
+      - test_test:
+          name: test_test_master
           filters: *integration-master_filters
 
       # patch, minor, or major publishing, depending on which orb source
