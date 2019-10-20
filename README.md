@@ -1,0 +1,3 @@
+# Conftest Orb [![CircleCI](https://circleci.com/gh/kenfdev/conftest-orb.svg?style=svg)](https://circleci.com/gh/kenfdev/conftest-orb) [![CircleCI Orb Version](https://img.shields.io/endpoint.svg?url=https://badges.circleci.io/orb/kenfdev/conftest-orb)](https://circleci.com/orbs/registry/orb/kenfdev/conftest-orb) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kenfdev/conftest-orb/master/LICENSE)
+
+Simply integrate [Conftest](https://github.com/instrumenta/conftest) with CircleCI. Details about this orb can be viewed [here](https://circleci.com/orbs/registry/orb/kenfdev/conftest-orb)
