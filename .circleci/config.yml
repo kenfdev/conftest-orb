@@ -25,6 +25,21 @@ alias:
   prod-deploy_requires:
     &prod-deploy_requires [push_pull_test_master, general_usecase_test_master]
 
+commands:
+  start_oci_registry:
+    parameters:
+      image:
+        description: The image of the OCI registry
+        type: string
+        default: registry:2
+    steps:
+      - run:
+          name: Dockerhub login
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Run docker registry
+          command: docker run -d --rm -p 5000:5000 --name registry << parameters.image >>
+
 executors:
   machine:
     machine:
@@ -34,42 +49,42 @@ jobs:
   push_pull_test:
     executor: machine
     steps:
-      - run:
-          name: Dockerhub login
-          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run:
-          name: Run docker registry
-          command: docker run -d --rm -p 5000:5000 --name registry registry:2
+      - start_oci_registry
       - checkout
       - conftest/install
       - conftest/push:
-          path: test/orb/policy
+          path: .
           repository: 127.0.0.1:5000/policies:latest
       - conftest/pull:
           policy_path: /tmp/policy
           repository: 127.0.0.1:5000/policies:latest
   general_usecase_test:
-    executor: orb-tools/ubuntu
+    executor: machine
     steps:
       - checkout
       - circleci-cli/install
       - run:
           name: Pack the orb.yml
-          command: circleci config pack src > test/orb/orb.yml
+          command: circleci config pack src > orb.yml
       - conftest/install
+      - start_oci_registry:
+          image: kenfdev/circleci-orbs-policies
+      - conftest/pull:
+          policy_path: policy
+          repository: 127.0.0.1:5000/policies:latest
       - conftest/verify:
-          policy_path: test/orb/policy
+          policy_path: policy
       # test with minimum options
       - conftest/test:
-          policy_path: test/orb/policy
-          file: test/orb/orb.yml
+          policy_path: policy
+          file: orb.yml
       # test with full options
       - conftest/test:
-          policy_path: test/orb/policy
+          policy_path: policy
           fail_on_warn: true
           input_type: yaml
           output_type: json
-          file: test/orb/orb.yml
+          file: orb.yml
 
 workflows:
   lint_pack-validate_publish-dev:
