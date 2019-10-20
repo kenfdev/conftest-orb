@@ -42,7 +42,7 @@ jobs:
       - checkout
       - conftest/install
       - conftest/push:
-          policy_path: test/orb/policy
+          path: test/orb/policy
           repository: 127.0.0.1:5000/policies:latest
       - conftest/pull:
           policy_path: /tmp/policy
