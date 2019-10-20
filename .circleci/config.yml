@@ -22,7 +22,8 @@ alias:
     tags:
       only: /master-.*/
 
-  prod-deploy_requires: &prod-deploy_requires [general_usecase_test_master]
+  prod-deploy_requires:
+    &prod-deploy_requires [push_pull_test_master, general_usecase_test_master]
 
 executors:
   machine:
