@@ -38,6 +38,8 @@ jobs:
           name: Pack the orb.yml
           command: circleci config pack src > test/orb/orb.yml
       - conftest/install
+      - conftest/verify:
+          policy_path: test/orb/policy
       # test with minimum options
       - conftest/test:
           policy_path: test/orb/policy
