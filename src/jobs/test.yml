@@ -12,6 +12,7 @@ parameters:
   repository:
     description: Repository to pull policies from. If specified, will pull policies to the `policy_path` before executing the test.
     type: string
+    default: ''
   fail_on_warn:
     description: Return a non-zero exit code when warnings are found.
     type: boolean
