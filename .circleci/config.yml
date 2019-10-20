@@ -49,6 +49,7 @@ jobs:
           policy_path: test/orb/policy
           fail_on_warn: true
           input_type: yaml
+          output_type: json
           file: test/orb/orb.yml
 
 workflows:

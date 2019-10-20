@@ -16,13 +16,23 @@ parameters:
   input_type:
     description: Input type for given source, especially useful when using conftest with stdin.(valid options are toml, tf, hcl, cue, ini, yaml, json)
     type: string
-    default: ""
+    default: ''
+  output_type:
+    description: Output format for conftest results.(valid options are stdout, json, tap)
+    type: enum
+    enum: ['stdout', 'json', 'tap']
+    default: 'stdout'
   file:
-    description: Return
+    description: File(s) to test against.
     type: string
 
 steps:
   - run:
       name: Run conftest test
       command: |
-        conftest test --namespace << parameters.namespace >> --policy << parameters.policy_path >> <<# parameters.fail_on_warn >>--fail-on-warn <</ parameters.fail_on_warn >><<# parameters.input_type >>--input <<  parameters.input_type >><</ parameters.input_type >> << parameters.file >>
+        conftest test --namespace << parameters.namespace >> \
+          --policy << parameters.policy_path >> \
+          <<# parameters.fail_on_warn >>--fail-on-warn <</ parameters.fail_on_warn >> \
+          <<# parameters.input_type >>--input << parameters.input_type >><</ parameters.input_type >> \
+          --output << parameters.output_type >> \
+          << parameters.file >>
