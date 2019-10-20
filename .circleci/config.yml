@@ -22,14 +22,31 @@ alias:
     tags:
       only: /master-.*/
 
-  prod-deploy_requires: &prod-deploy_requires [install_test_master]
+  prod-deploy_requires: &prod-deploy_requires [general_usecase_test_master]
+
+executors:
+  docker:
+    machine: true
 
 jobs:
-  install_test:
-    executor: orb-tools/ubuntu
+  push_pull_test:
+    executor: docker
     steps:
+      - run:
+          name: Dockerhub login
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Run docker registry
+          command: docker run -d --rm -p 5000:5000 --name registry registry:2
+      - checkout
       - conftest/install
-  test_test:
+      - conftest/push:
+          policy_path: test/orb/policy
+          repository: 127.0.0.1:5000/policies:latest
+      - conftest/pull:
+          policy_path: policy
+          repository: 127.0.0.1:5000/policies:latest
+  general_usecase_test:
     executor: orb-tools/ubuntu
     steps:
       - checkout
@@ -104,19 +121,19 @@ workflows:
   integration-tests_prod-release:
     jobs:
       # triggered by non-master branch commits
-      - install_test:
-          name: install_test_dev
+      - general_usecase_test:
+          name: general_usecase_test_dev
           filters: *integration-dev_filters
-      - test_test:
-          name: test_test_dev
+      - push_pull_test:
+          name: push_pull_test_dev
           filters: *integration-dev_filters
 
       # triggered by master branch commits
-      - install_test:
-          name: install_test_master
+      - general_usecase_test:
+          name: general_usecase_test_master
           filters: *integration-master_filters
-      - test_test:
-          name: test_test_master
+      - push_pull_test:
+          name: push_pull_test_master
           filters: *integration-master_filters
 
       # patch, minor, or major publishing, depending on which orb source
