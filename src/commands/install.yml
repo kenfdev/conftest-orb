@@ -8,7 +8,7 @@ parameters:
 
 steps:
   - run:
-      name: Download the CLI
+      name: Installing Conftest
       # TODO: make it multiarch aware
       command: |
         if [[ $EUID == 0 ]]; then export SUDO=""; else export SUDO="sudo"; fi
